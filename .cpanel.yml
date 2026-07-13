@@ -25,7 +25,7 @@
 
 deployment:
   tasks:
-    - export APP_ROOT=mytuto-app
+    - export APP_ROOT=MyTuto
     - export NODE_VERSION=20
     - export DEPLOYPATH=$HOME/$APP_ROOT
     - /bin/mkdir -p $DEPLOYPATH
