@@ -28,7 +28,7 @@ deployment:
   tasks:
     - export APP_ROOT=MyTuto
     - export NODE_VERSION=20
-    - export DEPLOYPATH=/home/mytutoorg/public_html/MyTuto/
+    - export DEPLOYPATH=/home/mytutoorg/public_html/MyTuto
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp -R web/. $DEPLOYPATH
     - /bin/rm -rf $DEPLOYPATH/node_modules $DEPLOYPATH/.next
