@@ -1,0 +1,41 @@
+---
+# cPanel Git Version Control deployment file.
+# Docs: https://api.docs.cpanel.net/guides/guide-to-deployment-git-version-control/
+#
+# Prerequisites (one-time, done in cPanel's UI before the first deploy):
+#   1. "Setup Node.js App" -> create an app with:
+#        - Node.js version: match NODE_VERSION below (e.g. 20)
+#        - Application mode: Production
+#        - Application root: match APP_ROOT below (path is relative to $HOME)
+#        - Application URL: www.mytuto.org
+#        - Application startup file: server.js
+#      Then click "Create". cPanel provisions a matching nodevenv used below.
+#   2. "Git Version Control" -> create/clone this repository, then use
+#      "Manage" -> "Pull or Deploy" to trigger a deploy (or enable
+#      automatic deployment on push, if your plan supports it).
+#   3. Edit APP_ROOT / NODE_VERSION below to exactly match what you chose
+#      in step 1 — cPanel will not derive these automatically.
+#
+# What this does on every deploy:
+#   - Copies the built web/ app (source only) into the Node.js app's root
+#   - Installs dependencies and runs `next build` inside that app's own
+#     Node version (via cPanel's nodevenv), so the deployed build always
+#     matches the Node runtime Passenger will execute it with
+#   - Touches tmp/restart.txt so Passenger picks up the new build
+
+deployment:
+  tasks:
+    - export APP_ROOT=mytuto-app
+    - export NODE_VERSION=20
+    - export DEPLOYPATH=$HOME/$APP_ROOT
+    - /bin/mkdir -p $DEPLOYPATH
+    - /bin/cp -R web/. $DEPLOYPATH
+    - /bin/rm -rf $DEPLOYPATH/node_modules $DEPLOYPATH/.next
+    - source $HOME/nodevenv/$APP_ROOT/$NODE_VERSION/bin/activate
+    - cd $DEPLOYPATH
+    - npm install --include=dev
+    - npm run build
+    - npm prune --omit=dev
+    - deactivate
+    - /bin/mkdir -p $DEPLOYPATH/tmp
+    - /bin/touch $DEPLOYPATH/tmp/restart.txt
