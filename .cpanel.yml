@@ -22,12 +22,12 @@
 #     Node version (via cPanel's nodevenv), so the deployed build always
 #     matches the Node runtime Passenger will execute it with
 #   - Touches tmp/restart.txt so Passenger picks up the new build
+#    - export DEPLOYPATH=$HOME/$APP_ROOT
 
 deployment:
   tasks:
     - export APP_ROOT=MyTuto
     - export NODE_VERSION=20
-#    - export DEPLOYPATH=$HOME/$APP_ROOT
     - export DEPLOYPATH=/home/mytutoorg/public_html/MyTuto/
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp -R web/. $DEPLOYPATH
