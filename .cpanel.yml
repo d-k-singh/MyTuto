@@ -7,12 +7,13 @@
 #        - Node.js version: match NODE_VERSION below (e.g. 20)
 #        - Application mode: Production
 #        - Application root: match APP_ROOT below (path is relative to $HOME)
-#        - Application URL: www.mytuto.org
+#        - Application URL: mytuto.org (add a www -> non-www redirect
+#          separately in cPanel's Domains tool if you want both to resolve)
 #        - Application startup file: server.js
 #      Then click "Create". cPanel provisions a matching nodevenv used below.
-#   2. "Git Version Control" -> create/clone this repository, then use
-#      "Manage" -> "Pull or Deploy" to trigger a deploy (or enable
-#      automatic deployment on push, if your plan supports it).
+#   2. "Git Version Control" -> create/clone this repository, tracking the
+#      `main` branch, then use "Manage" -> "Pull or Deploy" to trigger a
+#      deploy (or enable automatic deployment on push, if supported).
 #   3. Edit APP_ROOT / NODE_VERSION below to exactly match what you chose
 #      in step 1 — cPanel will not derive these automatically.
 #
@@ -22,7 +23,6 @@
 #     Node version (via cPanel's nodevenv), so the deployed build always
 #     matches the Node runtime Passenger will execute it with
 #   - Touches tmp/restart.txt so Passenger picks up the new build
-#    - export DEPLOYPATH=$HOME/$APP_ROOT
 
 deployment:
   tasks:
