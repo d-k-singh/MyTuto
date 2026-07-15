@@ -14,7 +14,9 @@
 /coverage
 
 # next.js
-/.next/
+# .next/ build output IS committed (deployed pre-built, not built on the
+# server) — only exclude the local incremental-build cache.
+/.next/cache/
 /out/
 
 # production

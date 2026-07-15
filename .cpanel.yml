@@ -2,6 +2,18 @@
 # cPanel Git Version Control deployment file.
 # Docs: https://api.docs.cpanel.net/guides/guide-to-deployment-git-version-control/
 #
+# Build strategy: PRE-BUILT. The web/.next production build is created
+# locally (npm run build) and committed to git — the server never runs
+# `next build`. This is deliberate: this project's build toolchain
+# (TypeScript + Tailwind v4 + ESLint) was getting OOM/CPU-killed under
+# this shared host's per-account resource limits when we tried building
+# on the server, which left `.next` empty and Passenger crash-looping.
+# The server now only copies files and installs a handful of lightweight
+# production dependencies (next/react/react-dom) — no compilation.
+#
+# >>> BEFORE EVERY DEPLOY, run this locally and push the result: <<<
+#   cd web && npm run build && git add -A ../web/.next && git commit -m "Update build" && git push
+#
 # Prerequisites (one-time, done in cPanel's UI before the first deploy):
 #   1. "Setup Node.js App" -> create an app with:
 #        - Node.js version: match NODE_VERSION below (e.g. 20)
@@ -18,10 +30,11 @@
 #      in step 1 — cPanel will not derive these automatically.
 #
 # What this does on every deploy:
-#   - Copies the built web/ app (source only) into the Node.js app's root
-#   - Installs dependencies and runs `next build` inside that app's own
-#     Node version (via cPanel's nodevenv), so the deployed build always
-#     matches the Node runtime Passenger will execute it with
+#   - Copies the web/ app (including the pre-built .next/) into the
+#     Node.js app's root
+#   - Installs only production dependencies (next, react, react-dom) using
+#     the app's own Node version (via cPanel's nodevenv) — a light install,
+#     not the full dev toolchain
 #   - Touches tmp/restart.txt so Passenger picks up the new build
 
 deployment:
@@ -31,12 +44,10 @@ deployment:
     - export DEPLOYPATH=$HOME/$APP_ROOT
     - /bin/mkdir -p $DEPLOYPATH
     - /bin/cp -R web/. $DEPLOYPATH
-    - /bin/rm -rf $DEPLOYPATH/node_modules $DEPLOYPATH/.next
+    - /bin/rm -rf $DEPLOYPATH/node_modules
     - source $HOME/nodevenv/$APP_ROOT/$NODE_VERSION/bin/activate
     - cd $DEPLOYPATH
-    - npm install --include=dev
-    - npm run build
-    - npm prune --omit=dev
+    - npm ci --omit=dev
     - deactivate
     - /bin/mkdir -p $DEPLOYPATH/tmp
     - /bin/touch $DEPLOYPATH/tmp/restart.txt

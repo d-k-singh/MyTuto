@@ -1,0 +1,4 @@
+# Next.js build output is deployed as-is (pre-built, not rebuilt on the
+# server) — it must stay byte-identical to what was tested locally, so
+# never let Git normalize line endings in it regardless of platform.
+web/.next/** -text
