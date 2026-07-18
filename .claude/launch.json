@@ -12,6 +12,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": ["--prefix", "web", "run", "start"],
       "port": 3000
+    },
+    {
+      "name": "backend-dev",
+      "runtimeExecutable": "C:\\tools\\php83\\php.exe",
+      "runtimeArgs": ["backend/artisan", "serve", "--port=8000"],
+      "port": 8000
     }
   ]
 }
