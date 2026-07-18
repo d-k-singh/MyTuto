@@ -68,9 +68,9 @@ export default function LoginMenu() {
               href={`/login?role=${role}`}
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-indigo-50"
+              className="flex items-start gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-brand-blue/5"
             >
-              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-blue/10 text-brand-blue">
                 <Icon className="h-5 w-5" />
               </span>
               <span>

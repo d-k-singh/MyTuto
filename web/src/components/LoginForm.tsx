@@ -46,7 +46,7 @@ export default function LoginForm({
             onClick={() => setRole(r)}
             className={`flex flex-col items-center gap-1.5 rounded-2xl border px-3 py-3 text-xs font-semibold transition-colors ${
               role === r
-                ? "border-indigo-600 bg-indigo-50 text-indigo-700"
+                ? "border-brand-blue bg-brand-blue/10 text-brand-blue"
                 : "border-zinc-200 bg-white text-zinc-500 hover:border-zinc-300"
             }`}
           >
@@ -102,7 +102,7 @@ export default function LoginForm({
               <input
                 type="text"
                 placeholder="Jane Doe"
-                className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15"
               />
             </div>
           )}
@@ -113,7 +113,7 @@ export default function LoginForm({
             <input
               type="email"
               placeholder="you@example.com"
-              className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15"
             />
           </div>
           <div>
@@ -123,7 +123,7 @@ export default function LoginForm({
             <input
               type="password"
               placeholder="••••••••"
-              className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15"
             />
           </div>
 
@@ -131,7 +131,7 @@ export default function LoginForm({
             type="submit"
             disabled
             title="Coming soon"
-            className="w-full cursor-not-allowed rounded-xl bg-indigo-600/50 py-3 text-sm font-semibold text-white"
+            className="w-full cursor-not-allowed rounded-xl bg-brand-blue/50 py-3 text-sm font-semibold text-white"
           >
             {mode === "login" ? "Log In" : "Create Account"}
           </button>
@@ -157,7 +157,7 @@ export default function LoginForm({
           ))}
         </div>
 
-        <div className="mt-5 flex items-start gap-2 rounded-xl bg-amber-50 px-3.5 py-3 text-xs leading-5 text-amber-800">
+        <div className="mt-5 flex items-start gap-2 rounded-xl bg-brand-orange/10 px-3.5 py-3 text-xs leading-5 text-brand-orange-dark">
           <Info className="mt-0.5 h-4 w-4 shrink-0" />
           Account creation and sign-in aren&apos;t live yet — this is a
           preview of the MyTuto login experience.
@@ -165,7 +165,7 @@ export default function LoginForm({
       </div>
 
       <p className="mt-6 text-center text-sm text-zinc-500">
-        <Link href="/" className="font-semibold text-indigo-600 hover:text-indigo-700">
+        <Link href="/" className="font-semibold text-brand-blue hover:text-brand-blue-dark">
           &larr; Back to home
         </Link>
       </p>

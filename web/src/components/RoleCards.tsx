@@ -14,7 +14,7 @@ const ROLES = [
     description:
       "Search verified tutors by subject, budget, and schedule. Get AI-matched recommendations and message teachers privately.",
     bullets: ["AI teacher matching", "Book & join live classes", "Track progress & certificates"],
-    accent: "from-indigo-500 to-indigo-600",
+    accent: "from-brand-blue to-brand-blue-dark",
   },
   {
     role: "parent",
@@ -23,7 +23,7 @@ const ROLES = [
     description:
       "Manage one or more child profiles, set spending limits, approve tutors, and monitor progress — all from one dashboard.",
     bullets: ["Multi-child dashboard", "Spending & tutor controls", "Progress reports & alerts"],
-    accent: "from-amber-500 to-orange-500",
+    accent: "from-brand-orange to-brand-orange-dark",
   },
   {
     role: "teacher",
@@ -32,7 +32,7 @@ const ROLES = [
     description:
       "Build a global tutoring business. Set your own rates, manage enquiries, and get paid securely after every class.",
     bullets: ["Global student reach", "Flexible pricing & schedule", "Secure, timely payouts"],
-    accent: "from-violet-500 to-purple-600",
+    accent: "from-brand-purple to-brand-pink",
   },
 ] as const;
 
@@ -74,7 +74,7 @@ export default function RoleCards() {
             <div className="mt-6 flex items-center gap-4 border-t border-zinc-100 pt-5">
               <Link
                 href={`/login?role=${role}&mode=signup`}
-                className="text-sm font-semibold text-indigo-600 transition-colors hover:text-indigo-700"
+                className="text-sm font-semibold text-brand-blue transition-colors hover:text-brand-blue-dark"
               >
                 Sign Up
               </Link>

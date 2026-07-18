@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, GraduationCap } from "lucide-react";
+import Image from "next/image";
+import { Menu, X } from "lucide-react";
 import LoginMenu from "./LoginMenu";
 
 const NAV_LINKS = [
@@ -18,12 +19,21 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
-            <GraduationCap className="h-5 w-5" />
-          </span>
-          <span className="text-lg font-extrabold tracking-tight text-zinc-900">
-            MyTuto
+        <Link href="/" className="flex flex-col justify-center leading-none">
+          <Image
+            src="/logo-header.png"
+            alt="MyTuto"
+            width={339}
+            height={240}
+            priority
+            className="h-9 w-auto"
+          />
+          <span className="hidden pl-10 text-[10px] font-semibold tracking-wide sm:block">
+            <span className="text-brand-blue">Connect</span>
+            <span className="text-zinc-400"> &rarr; </span>
+            <span className="text-brand-green">Learn</span>
+            <span className="text-zinc-400"> &rarr; </span>
+            <span className="text-brand-orange">Achieve</span>
           </span>
         </Link>
 
@@ -43,7 +53,7 @@ export default function Header() {
           <LoginMenu />
           <Link
             href="/login?role=student&mode=signup"
-            className="rounded-full bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-indigo-600/20 transition-colors hover:bg-indigo-700"
+            className="rounded-full bg-brand-blue px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-blue/30 transition-colors hover:bg-brand-blue-dark"
           >
             Get Started Free
           </Link>
@@ -92,7 +102,7 @@ export default function Header() {
             <Link
               href="/login?role=student&mode=signup"
               onClick={() => setMobileOpen(false)}
-              className="mt-2 rounded-full bg-indigo-600 px-4 py-2.5 text-center text-sm font-semibold text-white"
+              className="mt-2 rounded-full bg-brand-blue px-4 py-2.5 text-center text-sm font-semibold text-white"
             >
               Get Started Free
             </Link>

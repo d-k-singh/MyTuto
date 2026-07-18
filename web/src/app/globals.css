@@ -3,11 +3,31 @@
 :root {
   --background: #fefcf9;
   --foreground: #16181d;
+
+  /* MyTuto brand palette, sampled from the logo mark */
+  --brand-navy: #16255c;
+  --brand-blue: #2e86d8;
+  --brand-blue-dark: #123b73;
+  --brand-orange: #f7941d;
+  --brand-orange-dark: #d9720a;
+  --brand-green: #2fa84f;
+  --brand-green-dark: #1f7a3b;
+  --brand-purple: #9c3fb5;
+  --brand-pink: #e91e8c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-navy: var(--brand-navy);
+  --color-brand-blue: var(--brand-blue);
+  --color-brand-blue-dark: var(--brand-blue-dark);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-dark: var(--brand-orange-dark);
+  --color-brand-green: var(--brand-green);
+  --color-brand-green-dark: var(--brand-green-dark);
+  --color-brand-purple: var(--brand-purple);
+  --color-brand-pink: var(--brand-pink);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

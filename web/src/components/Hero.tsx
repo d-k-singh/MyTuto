@@ -3,19 +3,27 @@ import { ShieldCheck, Sparkles, Star } from "lucide-react";
 
 export default function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-white">
+    <section className="relative overflow-hidden bg-gradient-to-b from-brand-blue/5 via-white to-white">
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-24 right-0 h-96 w-96 rounded-full bg-amber-200/40 blur-3xl"
+        className="pointer-events-none absolute -top-24 right-0 h-96 w-96 rounded-full bg-brand-orange/25 blur-3xl"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-24 top-40 h-72 w-72 rounded-full bg-indigo-200/50 blur-3xl"
+        className="pointer-events-none absolute -left-24 top-40 h-72 w-72 rounded-full bg-brand-blue/20 blur-3xl"
       />
 
       <div className="relative mx-auto grid max-w-7xl gap-12 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:items-center lg:px-8 lg:py-28">
         <div>
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-100 px-3 py-1 text-xs font-semibold text-indigo-700">
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm font-extrabold uppercase tracking-wide">
+            <span className="text-brand-blue">Connect</span>
+            <span className="text-zinc-300">&rarr;</span>
+            <span className="text-brand-green">Learn</span>
+            <span className="text-zinc-300">&rarr;</span>
+            <span className="text-brand-orange">Achieve</span>
+          </p>
+
+          <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-brand-blue/10 px-3 py-1 text-xs font-semibold text-brand-blue">
             <Sparkles className="h-3.5 w-3.5" />
             AI-powered teacher matching
           </span>
@@ -23,7 +31,7 @@ export default function Hero() {
           <h1 className="mt-5 text-4xl font-extrabold leading-tight tracking-tight text-zinc-900 sm:text-5xl lg:text-6xl">
             Find the right tutor.
             <br />
-            <span className="bg-gradient-to-r from-indigo-600 to-violet-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-brand-blue to-brand-purple bg-clip-text text-transparent">
               Anywhere in the world.
             </span>
           </h1>
@@ -37,7 +45,7 @@ export default function Hero() {
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/login?role=student&mode=signup"
-              className="rounded-full bg-indigo-600 px-6 py-3.5 text-center text-base font-semibold text-white shadow-lg shadow-indigo-600/25 transition-colors hover:bg-indigo-700"
+              className="rounded-full bg-brand-blue px-6 py-3.5 text-center text-base font-semibold text-white shadow-lg shadow-brand-blue/30 transition-colors hover:bg-brand-blue-dark"
             >
               Find a Tutor
             </Link>
@@ -51,11 +59,11 @@ export default function Hero() {
 
           <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
             <div className="flex items-center gap-2 text-sm text-zinc-600">
-              <ShieldCheck className="h-5 w-5 text-emerald-600" />
+              <ShieldCheck className="h-5 w-5 text-brand-green" />
               Identity-verified tutors
             </div>
             <div className="flex items-center gap-2 text-sm text-zinc-600">
-              <Star className="h-5 w-5 fill-amber-400 text-amber-400" />
+              <Star className="h-5 w-5 fill-brand-orange text-brand-orange" />
               4.8/5 average rating
             </div>
           </div>
@@ -77,7 +85,7 @@ export default function Hero() {
                   className="flex items-center justify-between rounded-2xl border border-zinc-100 bg-zinc-50/60 p-4"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 text-sm font-bold text-white">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-brand-blue to-brand-purple text-sm font-bold text-white">
                       {t.name.charAt(0)}
                     </div>
                     <div>
@@ -87,7 +95,7 @@ export default function Hero() {
                       <p className="text-xs text-zinc-500">{t.subject}</p>
                     </div>
                   </div>
-                  <span className="rounded-full bg-emerald-100 px-2.5 py-1 text-xs font-bold text-emerald-700">
+                  <span className="rounded-full bg-brand-green/10 px-2.5 py-1 text-xs font-bold text-brand-green-dark">
                     {t.match}% match
                   </span>
                 </div>

@@ -6,18 +6,21 @@ const STEPS = [
     title: "Search & get matched",
     description:
       "Tell us your subject, level, budget, and schedule. Our AI scores every tutor for compatibility and surfaces your best matches first.",
+    color: "text-brand-blue",
   },
   {
     icon: MessageCircleHeart,
     title: "Enquire, privately",
     description:
       "Message a tutor without exposing contact details. Nobody's phone number or email is shared until a booking is confirmed.",
+    color: "text-brand-green",
   },
   {
     icon: Video,
     title: "Book & join live",
     description:
       "Confirm a session and join over Zoom or Google Meet. Pay securely, track attendance, and download certificates when you're done.",
+    color: "text-brand-orange",
   },
 ];
 
@@ -35,10 +38,12 @@ export default function HowItWorks() {
         </div>
 
         <div className="mt-14 grid gap-8 md:grid-cols-3">
-          {STEPS.map(({ icon: Icon, title, description }, i) => (
+          {STEPS.map(({ icon: Icon, title, description, color }, i) => (
             <div key={title} className="relative">
               <div className="flex items-center gap-4">
-                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white text-indigo-600 shadow-md shadow-zinc-900/5">
+                <span
+                  className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-white shadow-md shadow-zinc-900/5 ${color}`}
+                >
                   <Icon className="h-7 w-7" />
                 </span>
                 <span className="text-5xl font-black text-zinc-200">

@@ -1,5 +1,7 @@
 // Custom server required by cPanel's Node.js App (Phusion Passenger).
 // Passenger spawns this file directly and expects it to listen on process.env.PORT.
+// Plain CommonJS on purpose — this file isn't processed by Next's compiler.
+/* eslint-disable @typescript-eslint/no-require-imports */
 const { createServer } = require("http");
 const next = require("next");
 

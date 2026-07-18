@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { GraduationCap } from "lucide-react";
+import Image from "next/image";
 
 const COLUMNS = [
   {
@@ -42,15 +42,23 @@ export default function Footer() {
       <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-10 lg:grid-cols-5">
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-600 text-white">
-                <GraduationCap className="h-5 w-5" />
-              </span>
-              <span className="text-lg font-extrabold tracking-tight text-zinc-900">
-                MyTuto
-              </span>
+            <Link href="/">
+              <Image
+                src="/logo-header.png"
+                alt="MyTuto"
+                width={339}
+                height={240}
+                className="h-10 w-auto"
+              />
             </Link>
-            <p className="mt-4 text-sm leading-6 text-zinc-500">
+            <p className="mt-3 text-sm font-bold tracking-wide">
+              <span className="text-brand-blue">Connect</span>
+              <span className="text-zinc-300"> &rarr; </span>
+              <span className="text-brand-green">Learn</span>
+              <span className="text-zinc-300"> &rarr; </span>
+              <span className="text-brand-orange">Achieve</span>
+            </p>
+            <p className="mt-3 text-sm leading-6 text-zinc-500">
               The AI-powered education marketplace connecting students,
               parents, and tutors worldwide.
             </p>
