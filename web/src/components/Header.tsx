@@ -19,22 +19,15 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/80 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex flex-col justify-center leading-none">
+        <Link href="/" className="flex items-center">
           <Image
-            src="/logo-header.png"
-            alt="MyTuto"
-            width={339}
-            height={240}
+            src="/logo-wordmark.png"
+            alt="MyTuto — Connect, Learn, Achieve"
+            width={1237}
+            height={280}
             priority
-            className="h-9 w-auto"
+            className="h-10 w-auto sm:h-11"
           />
-          <span className="hidden pl-10 text-[10px] font-semibold tracking-wide sm:block">
-            <span className="text-brand-blue">Connect</span>
-            <span className="text-zinc-400"> &rarr; </span>
-            <span className="text-brand-green">Learn</span>
-            <span className="text-zinc-400"> &rarr; </span>
-            <span className="text-brand-orange">Achieve</span>
-          </span>
         </Link>
 
         <nav className="hidden items-center gap-8 lg:flex">

@@ -13,12 +13,12 @@ export default async function LoginPage({
     <div className="flex min-h-screen flex-1 flex-col items-center justify-center bg-gradient-to-b from-brand-blue/5 via-white to-white px-4 py-16">
       <Link href="/" className="mb-8">
         <Image
-          src="/logo-header.png"
-          alt="MyTuto"
-          width={339}
-          height={240}
+          src="/logo-wordmark.png"
+          alt="MyTuto — Connect, Learn, Achieve"
+          width={1237}
+          height={280}
           priority
-          className="h-10 w-auto"
+          className="h-11 w-auto"
         />
       </Link>
 

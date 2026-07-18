@@ -44,21 +44,14 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <Link href="/">
               <Image
-                src="/logo-header.png"
-                alt="MyTuto"
-                width={339}
-                height={240}
-                className="h-10 w-auto"
+                src="/logo-wordmark.png"
+                alt="MyTuto — Connect, Learn, Achieve"
+                width={1237}
+                height={280}
+                className="h-12 w-auto"
               />
             </Link>
-            <p className="mt-3 text-sm font-bold tracking-wide">
-              <span className="text-brand-blue">Connect</span>
-              <span className="text-zinc-300"> &rarr; </span>
-              <span className="text-brand-green">Learn</span>
-              <span className="text-zinc-300"> &rarr; </span>
-              <span className="text-brand-orange">Achieve</span>
-            </p>
-            <p className="mt-3 text-sm leading-6 text-zinc-500">
+            <p className="mt-4 text-sm leading-6 text-zinc-500">
               The AI-powered education marketplace connecting students,
               parents, and tutors worldwide.
             </p>
