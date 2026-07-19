@@ -18,6 +18,12 @@
       "runtimeExecutable": "C:\\tools\\php83\\php.exe",
       "runtimeArgs": ["backend/artisan", "serve", "--port=8000"],
       "port": 8000
+    },
+    {
+      "name": "mysql-dev",
+      "runtimeExecutable": "C:\\tools\\mariadb\\bin\\mysqld.exe",
+      "runtimeArgs": ["--datadir=C:/tools/mariadb-data", "--port=3306"],
+      "port": 3306
     }
   ]
 }
