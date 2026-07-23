@@ -36,6 +36,28 @@
 #     the app's own Node version (via cPanel's nodevenv) — a light install,
 #     not the full dev toolchain
 #   - Touches tmp/restart.txt so Passenger picks up the new build
+#
+# --- Backend (Laravel API) ---
+# Deployed to ~/api-backend, served by the api.mytuto.org subdomain whose
+# document root points at ~/api-backend/public (not the app root — keeps
+# .env, app/, vendor/ etc. outside what's web-accessible).
+#
+# Prerequisites (one-time, done manually before the first deploy):
+#   1. Subdomain api.mytuto.org created, document root set to
+#      ~/api-backend/public
+#   2. MultiPHP Manager -> api.mytuto.org set to PHP 8.3+ (this server's
+#      default `php`/`composer` resolve to 8.2, below composer.json's
+#      ^8.3 requirement — that's why PHP_BIN below is an explicit
+#      versioned path, not just `php`)
+#   3. ~/api-backend/.env created manually via Terminal — NOT committed
+#      to git (contains real DB credentials). Not overwritten by deploy
+#      (backend/.env is gitignored, so the cp step below never touches it)
+#
+# composer install (not a committed vendor/) is attempted here first,
+# unlike the frontend's pre-built .next — Laravel's dependency tree is
+# much lighter than the Node toolchain that got OOM/CPU-killed on this
+# host. If this ever fails/hangs the same way, switch to committing a
+# locally-built vendor/ and drop the composer step, mirroring web/.next.
 
 deployment:
   tasks:
@@ -51,3 +73,15 @@ deployment:
     - deactivate
     - /bin/mkdir -p $DEPLOYPATH/tmp
     - /bin/touch $DEPLOYPATH/tmp/restart.txt
+
+    - export API_APP_ROOT=api-backend
+    - export API_PHP_BIN=/opt/cpanel/ea-php83/root/usr/bin/php
+    - export API_DEPLOYPATH=$HOME/$API_APP_ROOT
+    - /bin/mkdir -p $API_DEPLOYPATH
+    - /bin/cp -R backend/. $API_DEPLOYPATH
+    - /bin/rm -rf $API_DEPLOYPATH/vendor
+    - $API_PHP_BIN /usr/local/bin/composer install --no-dev --optimize-autoloader --no-interaction --working-dir=$API_DEPLOYPATH
+    - /bin/chmod -R 775 $API_DEPLOYPATH/storage $API_DEPLOYPATH/bootstrap/cache
+    - $API_PHP_BIN $API_DEPLOYPATH/artisan migrate --force
+    - $API_PHP_BIN $API_DEPLOYPATH/artisan config:clear
+    - $API_PHP_BIN $API_DEPLOYPATH/artisan storage:link
