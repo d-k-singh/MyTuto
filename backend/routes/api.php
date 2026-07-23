@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\TeacherVerificationController;
+use App\Http\Controllers\Api\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Parent\ChildProfileController;
 use App\Http\Controllers\Api\Parent\ParentalConsentRequestController as ParentParentalConsentRequestController;
@@ -43,5 +45,16 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/parental-consent-requests', [ParentParentalConsentRequestController::class, 'index']);
         Route::post('/parental-consent-requests/{consentRequest}/approve', [ParentParentalConsentRequestController::class, 'approve']);
         Route::post('/parental-consent-requests/{consentRequest}/decline', [ParentParentalConsentRequestController::class, 'decline']);
+    });
+
+    Route::middleware('role:admin,super_admin')->prefix('admin')->group(function () {
+        Route::get('/users', [AdminUserController::class, 'index']);
+        Route::get('/users/{user}', [AdminUserController::class, 'show']);
+        Route::patch('/users/{user}/activate', [AdminUserController::class, 'activate']);
+        Route::patch('/users/{user}/deactivate', [AdminUserController::class, 'deactivate']);
+
+        Route::patch('/teachers/{teacherProfile}/verification', [TeacherVerificationController::class, 'updateVerification']);
+        Route::patch('/teachers/{teacherProfile}/approve', [TeacherVerificationController::class, 'approve']);
+        Route::patch('/teachers/{teacherProfile}/reject', [TeacherVerificationController::class, 'reject']);
     });
 });
