@@ -62,6 +62,17 @@ class User extends Authenticatable
         return $this->hasMany(StudentProfile::class, 'parent_user_id');
     }
 
+    /**
+     * Parental consent requests this user has sent as a student. (There's
+     * no inverse "requests addressed to me" relation for parents — that
+     * lookup is by email, not a foreign key, since the parent may not
+     * have an account yet when the request is created.)
+     */
+    public function parentalConsentRequests(): HasMany
+    {
+        return $this->hasMany(ParentalConsentRequest::class, 'student_id');
+    }
+
     public function isTeacher(): bool
     {
         return $this->role === UserRole::Teacher;

@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Parent\ChildProfileController;
+use App\Http\Controllers\Api\Parent\ParentalConsentRequestController as ParentParentalConsentRequestController;
 use App\Http\Controllers\Api\Parent\ParentProfileController;
+use App\Http\Controllers\Api\Student\ParentalConsentRequestController as StudentParentalConsentRequestController;
 use App\Http\Controllers\Api\Student\StudentProfileController;
 use App\Http\Controllers\Api\Teacher\TeacherProfileController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +24,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:student')->prefix('student')->group(function () {
         Route::get('/profile', [StudentProfileController::class, 'show']);
         Route::put('/profile', [StudentProfileController::class, 'update']);
+
+        Route::get('/parental-consent-requests', [StudentParentalConsentRequestController::class, 'index']);
+        Route::post('/parental-consent-requests', [StudentParentalConsentRequestController::class, 'store']);
     });
 
     Route::middleware('role:parent')->prefix('parent')->group(function () {
@@ -34,5 +39,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/children/{child}', [ChildProfileController::class, 'update']);
         Route::patch('/children/{child}/deactivate', [ChildProfileController::class, 'deactivate']);
         Route::patch('/children/{child}/reactivate', [ChildProfileController::class, 'reactivate']);
+
+        Route::get('/parental-consent-requests', [ParentParentalConsentRequestController::class, 'index']);
+        Route::post('/parental-consent-requests/{consentRequest}/approve', [ParentParentalConsentRequestController::class, 'approve']);
+        Route::post('/parental-consent-requests/{consentRequest}/decline', [ParentParentalConsentRequestController::class, 'decline']);
     });
 });
