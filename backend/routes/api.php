@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\Parent\ChildProfileController;
 use App\Http\Controllers\Api\Parent\ParentProfileController;
 use App\Http\Controllers\Api\Student\StudentProfileController;
 use App\Http\Controllers\Api\Teacher\TeacherProfileController;
@@ -26,5 +27,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:parent')->prefix('parent')->group(function () {
         Route::get('/profile', [ParentProfileController::class, 'show']);
         Route::put('/profile', [ParentProfileController::class, 'update']);
+
+        Route::get('/children', [ChildProfileController::class, 'index']);
+        Route::post('/children', [ChildProfileController::class, 'store']);
+        Route::get('/children/{child}', [ChildProfileController::class, 'show']);
+        Route::put('/children/{child}', [ChildProfileController::class, 'update']);
+        Route::patch('/children/{child}/deactivate', [ChildProfileController::class, 'deactivate']);
+        Route::patch('/children/{child}/reactivate', [ChildProfileController::class, 'reactivate']);
     });
 });

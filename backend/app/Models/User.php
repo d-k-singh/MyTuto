@@ -8,6 +8,7 @@ use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -48,6 +49,17 @@ class User extends Authenticatable
     public function parentProfile(): HasOne
     {
         return $this->hasOne(ParentProfile::class);
+    }
+
+    /**
+     * Child profiles this user (as a parent) has created (spec 4.2). Tied
+     * directly to the user account rather than routed through
+     * parentProfile, since a child link doesn't require a ParentProfile
+     * row to exist.
+     */
+    public function children(): HasMany
+    {
+        return $this->hasMany(StudentProfile::class, 'parent_user_id');
     }
 
     public function isTeacher(): bool

@@ -8,17 +8,20 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Appends(['completion_percentage', 'is_minor'])]
+#[Appends(['completion_percentage', 'is_minor', 'display_name'])]
 #[Fillable([
     'user_id',
     'parent_user_id',
+    'full_name',
     'date_of_birth',
     'gender',
     'country',
     'city',
     'profile_photo_path',
     'learning_goal',
+    'school_name',
     'parental_consent_given',
+    'is_active',
 ])]
 class StudentProfile extends Model
 {
@@ -27,6 +30,7 @@ class StudentProfile extends Model
         return [
             'date_of_birth' => 'date',
             'parental_consent_given' => 'boolean',
+            'is_active' => 'boolean',
         ];
     }
 
@@ -45,13 +49,33 @@ class StudentProfile extends Model
      */
     protected function completionPercentage(): Attribute
     {
-        $fields = ['date_of_birth', 'gender', 'country', 'city', 'profile_photo_path', 'learning_goal'];
+        $fields = ['date_of_birth', 'gender', 'country', 'city', 'profile_photo_path', 'learning_goal', 'school_name'];
 
         return Attribute::make(
             get: fn () => (int) round(
                 (count(array_filter($fields, fn (string $field) => filled($this->{$field}))) / count($fields)) * 100
             ),
         )->shouldCache();
+    }
+
+    /**
+     * Whether this profile has no login of its own — created directly by a
+     * parent (spec 4.2), rather than via a student's own registration.
+     */
+    public function isChildProfile(): bool
+    {
+        return $this->user_id === null;
+    }
+
+    /**
+     * full_name is set directly for parent-created child profiles; for a
+     * self-registered student it falls back to the linked user's name.
+     */
+    protected function displayName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->full_name ?? $this->user?->name,
+        );
     }
 
     /**
