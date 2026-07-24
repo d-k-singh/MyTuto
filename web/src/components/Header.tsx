@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
+import { Menu, X, LogOut } from "lucide-react";
 import LoginMenu from "./LoginMenu";
+import { useAuth } from "@/lib/auth";
 
 const NAV_LINKS = [
   { href: "#how-it-works", label: "How It Works" },
@@ -15,6 +17,15 @@ const NAV_LINKS = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const router = useRouter();
+  const { ready, user, isAuthenticated, logout } = useAuth();
+
+  async function handleLogout() {
+    await logout();
+    setMobileOpen(false);
+    router.push("/");
+    router.refresh();
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b border-zinc-200/70 bg-white/80 backdrop-blur-md">
@@ -43,13 +54,31 @@ export default function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <LoginMenu />
-          <Link
-            href="/login?role=student&mode=signup"
-            className="rounded-full bg-brand-blue px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-blue/30 transition-colors hover:bg-brand-blue-dark"
-          >
-            Get Started Free
-          </Link>
+          {ready && isAuthenticated ? (
+            <>
+              <span className="text-sm text-zinc-600">
+                Hi, <span className="font-semibold text-zinc-900">{user?.name.split(" ")[0]}</span>
+              </span>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center gap-1.5 rounded-full border border-zinc-200 px-4 py-2 text-sm font-medium text-zinc-700 transition-colors hover:border-zinc-300 hover:bg-zinc-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Log Out
+              </button>
+            </>
+          ) : (
+            <>
+              <LoginMenu />
+              <Link
+                href="/login?role=student&mode=signup"
+                className="rounded-full bg-brand-blue px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-blue/30 transition-colors hover:bg-brand-blue-dark"
+              >
+                Get Started Free
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -76,30 +105,47 @@ export default function Header() {
               </a>
             ))}
           </nav>
-          <div className="mt-4 flex flex-col gap-2 border-t border-zinc-200 pt-4">
-            <p className="px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">
-              Log in as
-            </p>
-            <div className="flex flex-col gap-1">
-              {["student", "parent", "teacher"].map((role) => (
-                <Link
-                  key={role}
-                  href={`/login?role=${role}`}
-                  onClick={() => setMobileOpen(false)}
-                  className="rounded-lg px-3 py-2.5 text-sm font-medium capitalize text-zinc-700 hover:bg-zinc-50"
-                >
-                  {role}
-                </Link>
-              ))}
+
+          {ready && isAuthenticated ? (
+            <div className="mt-4 flex flex-col gap-2 border-t border-zinc-200 pt-4">
+              <p className="px-3 text-sm text-zinc-600">
+                Hi, <span className="font-semibold text-zinc-900">{user?.name}</span>
+              </p>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="flex items-center justify-center gap-1.5 rounded-full border border-zinc-200 px-4 py-2.5 text-sm font-medium text-zinc-700"
+              >
+                <LogOut className="h-4 w-4" />
+                Log Out
+              </button>
             </div>
-            <Link
-              href="/login?role=student&mode=signup"
-              onClick={() => setMobileOpen(false)}
-              className="mt-2 rounded-full bg-brand-blue px-4 py-2.5 text-center text-sm font-semibold text-white"
-            >
-              Get Started Free
-            </Link>
-          </div>
+          ) : (
+            <div className="mt-4 flex flex-col gap-2 border-t border-zinc-200 pt-4">
+              <p className="px-3 text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                Log in as
+              </p>
+              <div className="flex flex-col gap-1">
+                {["student", "parent", "teacher"].map((role) => (
+                  <Link
+                    key={role}
+                    href={`/login?role=${role}`}
+                    onClick={() => setMobileOpen(false)}
+                    className="rounded-lg px-3 py-2.5 text-sm font-medium capitalize text-zinc-700 hover:bg-zinc-50"
+                  >
+                    {role}
+                  </Link>
+                ))}
+              </div>
+              <Link
+                href="/login?role=student&mode=signup"
+                onClick={() => setMobileOpen(false)}
+                className="mt-2 rounded-full bg-brand-blue px-4 py-2.5 text-center text-sm font-semibold text-white"
+              >
+                Get Started Free
+              </Link>
+            </div>
+          )}
         </div>
       )}
     </header>

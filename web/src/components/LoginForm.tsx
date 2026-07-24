@@ -1,13 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   GraduationCap,
   Users,
   BookOpenCheck,
-  Info,
+  Loader2,
+  AlertCircle,
 } from "lucide-react";
+import { api, ApiError } from "@/lib/api";
+import { storeSession, type AuthUser } from "@/lib/auth";
 
 type Role = "student" | "parent" | "teacher";
 type Mode = "login" | "signup";
@@ -22,6 +26,8 @@ function isRole(value: string | undefined): value is Role {
   return value === "student" || value === "parent" || value === "teacher";
 }
 
+type AuthResponse = { user: AuthUser; token: string };
+
 export default function LoginForm({
   initialRole,
   initialMode,
@@ -29,12 +35,74 @@ export default function LoginForm({
   initialRole?: string;
   initialMode?: string;
 }) {
+  const router = useRouter();
   const [role, setRole] = useState<Role>(
     isRole(initialRole) ? initialRole : "student",
   );
   const [mode, setMode] = useState<Mode>(
     initialMode === "signup" ? "signup" : "login",
   );
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirmation, setPasswordConfirmation] = useState("");
+
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [formError, setFormError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
+  function switchMode(next: Mode) {
+    setMode(next);
+    setFieldErrors({});
+    setFormError(null);
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setFieldErrors({});
+    setFormError(null);
+
+    try {
+      const response =
+        mode === "signup"
+          ? await api.post<AuthResponse>("/auth/register", {
+              name,
+              email,
+              password,
+              password_confirmation: passwordConfirmation,
+              role,
+            })
+          : await api.post<AuthResponse>("/auth/login", { email, password });
+
+      storeSession(response.token, response.user);
+      router.push("/");
+      router.refresh();
+    } catch (err) {
+      if (err instanceof ApiError) {
+        const nextFieldErrors: Record<string, string> = {};
+        for (const [field, messages] of Object.entries(err.errors)) {
+          nextFieldErrors[field] = messages[0];
+        }
+        setFieldErrors(nextFieldErrors);
+        if (Object.keys(nextFieldErrors).length === 0) {
+          setFormError(err.message);
+        }
+      } else {
+        setFormError("Something went wrong. Please try again.");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  const inputClass = (field: string) =>
+    `w-full rounded-xl border px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:ring-2 ${
+      fieldErrors[field]
+        ? "border-red-400 focus:border-red-400 focus:ring-red-100"
+        : "border-zinc-300 focus:border-brand-blue focus:ring-brand-blue/15"
+    }`;
 
   return (
     <div className="w-full max-w-md">
@@ -60,7 +128,7 @@ export default function LoginForm({
         <div className="flex items-center gap-2 rounded-full bg-zinc-100 p-1">
           <button
             type="button"
-            onClick={() => setMode("login")}
+            onClick={() => switchMode("login")}
             className={`flex-1 rounded-full py-2 text-sm font-semibold transition-colors ${
               mode === "login"
                 ? "bg-white text-zinc-900 shadow-sm"
@@ -71,7 +139,7 @@ export default function LoginForm({
           </button>
           <button
             type="button"
-            onClick={() => setMode("signup")}
+            onClick={() => switchMode("signup")}
             className={`flex-1 rounded-full py-2 text-sm font-semibold transition-colors ${
               mode === "signup"
                 ? "bg-white text-zinc-900 shadow-sm"
@@ -93,7 +161,14 @@ export default function LoginForm({
           .
         </p>
 
-        <form className="mt-6 space-y-4" onSubmit={(e) => e.preventDefault()}>
+        {formError && (
+          <div className="mt-4 flex items-start gap-2 rounded-xl bg-red-50 px-3.5 py-3 text-xs leading-5 text-red-700">
+            <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+            {formError}
+          </div>
+        )}
+
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           {mode === "signup" && (
             <div>
               <label className="mb-1.5 block text-sm font-medium text-zinc-700">
@@ -102,8 +177,14 @@ export default function LoginForm({
               <input
                 type="text"
                 placeholder="Jane Doe"
-                className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className={inputClass("name")}
               />
+              {fieldErrors.name && (
+                <p className="mt-1 text-xs text-red-600">{fieldErrors.name}</p>
+              )}
             </div>
           )}
           <div>
@@ -113,8 +194,14 @@ export default function LoginForm({
             <input
               type="email"
               placeholder="you@example.com"
-              className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              className={inputClass("email")}
             />
+            {fieldErrors.email && (
+              <p className="mt-1 text-xs text-red-600">{fieldErrors.email}</p>
+            )}
           </div>
           <div>
             <label className="mb-1.5 block text-sm font-medium text-zinc-700">
@@ -123,16 +210,39 @@ export default function LoginForm({
             <input
               type="password"
               placeholder="••••••••"
-              className="w-full rounded-xl border border-zinc-300 px-4 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:border-brand-blue focus:ring-2 focus:ring-brand-blue/15"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+              className={inputClass("password")}
             />
+            {fieldErrors.password && (
+              <p className="mt-1 text-xs text-red-600">{fieldErrors.password}</p>
+            )}
           </div>
+          {mode === "signup" && (
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-zinc-700">
+                Confirm password
+              </label>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={passwordConfirmation}
+                onChange={(e) => setPasswordConfirmation(e.target.value)}
+                required
+                minLength={8}
+                className={inputClass("password_confirmation")}
+              />
+            </div>
+          )}
 
           <button
             type="submit"
-            disabled
-            title="Coming soon"
-            className="w-full cursor-not-allowed rounded-xl bg-brand-blue/50 py-3 text-sm font-semibold text-white"
+            disabled={submitting}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-blue py-3 text-sm font-semibold text-white transition-colors hover:bg-brand-blue-dark disabled:cursor-not-allowed disabled:opacity-60"
           >
+            {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
             {mode === "login" ? "Log In" : "Create Account"}
           </button>
         </form>
@@ -155,12 +265,6 @@ export default function LoginForm({
               {provider}
             </button>
           ))}
-        </div>
-
-        <div className="mt-5 flex items-start gap-2 rounded-xl bg-brand-orange/10 px-3.5 py-3 text-xs leading-5 text-brand-orange-dark">
-          <Info className="mt-0.5 h-4 w-4 shrink-0" />
-          Account creation and sign-in aren&apos;t live yet — this is a
-          preview of the MyTuto login experience.
         </div>
       </div>
 
