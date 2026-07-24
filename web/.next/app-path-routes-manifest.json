@@ -2,6 +2,7 @@
   "/_global-error/page": "/_global-error",
   "/_not-found/page": "/_not-found",
   "/apple-icon.png/route": "/apple-icon.png",
+  "/dashboard/page": "/dashboard",
   "/icon.png/route": "/icon.png",
   "/login/page": "/login",
   "/page": "/"

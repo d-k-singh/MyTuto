@@ -56,4 +56,10 @@ export const api = {
       token,
       body: data !== undefined ? JSON.stringify(data) : undefined,
     }),
+  put: <T>(path: string, data?: unknown, token?: string) =>
+    request<T>(path, {
+      method: "PUT",
+      token,
+      body: data !== undefined ? JSON.stringify(data) : undefined,
+    }),
 };

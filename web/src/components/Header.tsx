@@ -59,6 +59,12 @@ export default function Header() {
               <span className="text-sm text-zinc-600">
                 Hi, <span className="font-semibold text-zinc-900">{user?.name.split(" ")[0]}</span>
               </span>
+              <Link
+                href="/dashboard"
+                className="rounded-full bg-brand-blue px-4 py-2 text-sm font-semibold text-white shadow-sm shadow-brand-blue/30 transition-colors hover:bg-brand-blue-dark"
+              >
+                Dashboard
+              </Link>
               <button
                 type="button"
                 onClick={handleLogout}
@@ -111,6 +117,13 @@ export default function Header() {
               <p className="px-3 text-sm text-zinc-600">
                 Hi, <span className="font-semibold text-zinc-900">{user?.name}</span>
               </p>
+              <Link
+                href="/dashboard"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-full bg-brand-blue px-4 py-2.5 text-center text-sm font-semibold text-white"
+              >
+                Dashboard
+              </Link>
               <button
                 type="button"
                 onClick={handleLogout}
