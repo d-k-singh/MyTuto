@@ -77,7 +77,8 @@ export default function LoginForm({
           : await api.post<AuthResponse>("/auth/login", { email, password });
 
       storeSession(response.token, response.user);
-      router.push(response.user.role === "student" ? "/dashboard" : "/");
+      const dashboardRoles = ["student", "parent"];
+      router.push(dashboardRoles.includes(response.user.role) ? "/dashboard" : "/");
       router.refresh();
     } catch (err) {
       if (err instanceof ApiError) {

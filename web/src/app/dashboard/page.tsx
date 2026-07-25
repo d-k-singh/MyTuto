@@ -7,6 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StudentDashboard from "@/components/dashboard/StudentDashboard";
+import ParentDashboard from "@/components/dashboard/ParentDashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -32,6 +33,8 @@ export default function DashboardPage() {
       <main className="mx-auto w-full max-w-5xl flex-1 px-4 py-8 sm:px-6">
         {user.role === "student" ? (
           <StudentDashboard token={token} />
+        ) : user.role === "parent" ? (
+          <ParentDashboard token={token} />
         ) : (
           <ComingSoon role={user.role} />
         )}

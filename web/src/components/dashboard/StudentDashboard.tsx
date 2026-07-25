@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Loader2, AlertCircle, CheckCircle2, Clock, XCircle } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
+import { toDateInputValue } from "@/lib/date";
 
 type StudentProfile = {
   id: number;
@@ -122,7 +123,7 @@ function ProfileCard({
   token: string;
   onSaved: (profile: StudentProfile) => void;
 }) {
-  const [dateOfBirth, setDateOfBirth] = useState(profile.date_of_birth ?? "");
+  const [dateOfBirth, setDateOfBirth] = useState(toDateInputValue(profile.date_of_birth));
   const [gender, setGender] = useState(profile.gender ?? "");
   const [country, setCountry] = useState(profile.country ?? "");
   const [city, setCity] = useState(profile.city ?? "");

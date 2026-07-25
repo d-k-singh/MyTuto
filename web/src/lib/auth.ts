@@ -38,6 +38,20 @@ function getServerSnapshot(): StoredSession | null {
   return null;
 }
 
+// A store that never changes after mount, purely to get a `false` snapshot
+// on the server/first-paint and `true` on the client — the standard
+// no-effect way to know hydration has landed, timed to resolve at the same
+// point React corrects `session` from its server snapshot.
+function subscribeNever() {
+  return () => {};
+}
+function isHydratedSnapshot() {
+  return true;
+}
+function isHydratedServerSnapshot() {
+  return false;
+}
+
 function subscribe(onStoreChange: () => void) {
   const handler = () => {
     cached = readSession();
@@ -67,6 +81,7 @@ function writeSession(session: StoredSession | null) {
 /** Client-side auth state, backed by localStorage. */
 export function useAuth() {
   const session = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const hydrated = useSyncExternalStore(subscribeNever, isHydratedSnapshot, isHydratedServerSnapshot);
 
   const logout = useCallback(async () => {
     const current = getSnapshot();
@@ -78,9 +93,7 @@ export function useAuth() {
   }, []);
 
   return {
-    // True once we're past the server-rendered (always-null) snapshot —
-    // callers use this to avoid flashing logged-out UI during hydration.
-    ready: typeof window !== "undefined",
+    ready: hydrated,
     user: session?.user ?? null,
     token: session?.token ?? null,
     isAuthenticated: session !== null,
