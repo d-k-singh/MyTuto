@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StudentDashboard from "@/components/dashboard/StudentDashboard";
 import ParentDashboard from "@/components/dashboard/ParentDashboard";
+import TeacherDashboard from "@/components/dashboard/TeacherDashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -35,6 +36,8 @@ export default function DashboardPage() {
           <StudentDashboard token={token} />
         ) : user.role === "parent" ? (
           <ParentDashboard token={token} />
+        ) : user.role === "teacher" ? (
+          <TeacherDashboard token={token} />
         ) : (
           <ComingSoon role={user.role} />
         )}
