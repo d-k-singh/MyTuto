@@ -9,6 +9,7 @@ import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StudentDashboard from "@/components/dashboard/StudentDashboard";
 import ParentDashboard from "@/components/dashboard/ParentDashboard";
 import TeacherDashboard from "@/components/dashboard/TeacherDashboard";
+import AdminDashboard from "@/components/dashboard/AdminDashboard";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -38,6 +39,8 @@ export default function DashboardPage() {
           <ParentDashboard token={token} />
         ) : user.role === "teacher" ? (
           <TeacherDashboard token={token} />
+        ) : user.role === "admin" || user.role === "super_admin" ? (
+          <AdminDashboard token={token} />
         ) : (
           <ComingSoon role={user.role} />
         )}
