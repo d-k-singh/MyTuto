@@ -12,6 +12,10 @@ use App\Http\Controllers\Api\Student\ParentalConsentRequestController as Student
 use App\Http\Controllers\Api\Student\StudentProfileController;
 use App\Http\Controllers\Api\SubjectCatalogController;
 use App\Http\Controllers\Api\Teacher\TeacherProfileController;
+use App\Http\Controllers\Api\Teacher\TeacherSubjectController;
+use App\Http\Controllers\Api\TeacherEnquiryController;
+use App\Http\Controllers\Api\TeacherShortlistController;
+use App\Http\Controllers\Api\TutorController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -30,6 +34,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::middleware('role:teacher')->prefix('teacher')->group(function () {
         Route::get('/profile', [TeacherProfileController::class, 'show']);
         Route::put('/profile', [TeacherProfileController::class, 'update']);
+
+        Route::get('/subjects', [TeacherSubjectController::class, 'index']);
+        Route::post('/subjects', [TeacherSubjectController::class, 'store']);
+        Route::put('/subjects/{teacherSubject}', [TeacherSubjectController::class, 'update']);
+        Route::delete('/subjects/{teacherSubject}', [TeacherSubjectController::class, 'destroy']);
     });
 
     Route::middleware('role:student')->prefix('student')->group(function () {
@@ -54,6 +63,17 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/parental-consent-requests', [ParentParentalConsentRequestController::class, 'index']);
         Route::post('/parental-consent-requests/{consentRequest}/approve', [ParentParentalConsentRequestController::class, 'approve']);
         Route::post('/parental-consent-requests/{consentRequest}/decline', [ParentParentalConsentRequestController::class, 'decline']);
+    });
+
+    Route::middleware('role:student,parent')->group(function () {
+        Route::get('/tutors/search', [TutorController::class, 'search']);
+        Route::get('/tutors/{teacherProfile}', [TutorController::class, 'show']);
+
+        Route::get('/shortlist', [TeacherShortlistController::class, 'index']);
+        Route::post('/tutors/{teacherProfile}/shortlist', [TeacherShortlistController::class, 'store']);
+        Route::delete('/tutors/{teacherProfile}/shortlist', [TeacherShortlistController::class, 'destroy']);
+
+        Route::post('/tutors/{teacherProfile}/enquiries', [TeacherEnquiryController::class, 'store']);
     });
 
     Route::middleware('role:admin,super_admin')->prefix('admin')->group(function () {

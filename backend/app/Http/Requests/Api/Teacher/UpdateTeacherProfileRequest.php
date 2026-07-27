@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Api\Teacher;
 
+use App\Enums\TimeBlock;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -39,6 +40,10 @@ class UpdateTeacherProfileRequest extends FormRequest
             'city' => ['sometimes', 'nullable', 'string', 'max:100'],
             'teaching_mode' => ['sometimes', 'nullable', Rule::in(['online', 'in_person', 'hybrid'])],
             'years_experience' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:80'],
+            'languages' => ['sometimes', 'nullable', 'array'],
+            'languages.*' => ['string', 'max:100'],
+            'available_time_blocks' => ['sometimes', 'nullable', 'array'],
+            'available_time_blocks.*' => [Rule::in(TimeBlock::values())],
         ];
     }
 }

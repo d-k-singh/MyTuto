@@ -21,7 +21,16 @@
     "afterFiles": [],
     "fallback": []
   },
-  "dynamicRoutes": [],
+  "dynamicRoutes": [
+    {
+      "page": "/teachers/[id]",
+      "regex": "^/teachers/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/teachers/(?<nxtPid>[^/]+?)(?:/)?$"
+    }
+  ],
   "staticRoutes": [
     {
       "page": "/",
@@ -52,6 +61,12 @@
       "regex": "^/dashboard(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/dashboard(?:/)?$"
+    },
+    {
+      "page": "/find-a-tutor",
+      "regex": "^/find\\-a\\-tutor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/find\\-a\\-tutor(?:/)?$"
     },
     {
       "page": "/icon.png",

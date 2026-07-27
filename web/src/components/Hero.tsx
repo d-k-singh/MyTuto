@@ -44,7 +44,7 @@ export default function Hero() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/login?role=student&mode=signup"
+              href="/find-a-tutor"
               className="rounded-full bg-brand-blue px-6 py-3.5 text-center text-base font-semibold text-white shadow-lg shadow-brand-blue/30 transition-colors hover:bg-brand-blue-dark"
             >
               Find a Tutor

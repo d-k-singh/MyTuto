@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Appends(['completion_percentage'])]
 #[Fillable([
@@ -19,6 +20,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'city',
     'profile_photo_path',
     'teaching_mode',
+    'languages',
+    'available_time_blocks',
     'years_experience',
     'identity_verified',
     'education_verified',
@@ -31,6 +34,8 @@ class TeacherProfile extends Model
     {
         return [
             'date_of_birth' => 'date',
+            'languages' => 'array',
+            'available_time_blocks' => 'array',
             'identity_verified' => 'boolean',
             'education_verified' => 'boolean',
             'background_check_passed' => 'boolean',
@@ -41,6 +46,21 @@ class TeacherProfile extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function subjects(): HasMany
+    {
+        return $this->hasMany(TeacherSubject::class);
+    }
+
+    public function shortlistedBy(): HasMany
+    {
+        return $this->hasMany(TeacherShortlist::class);
+    }
+
+    public function enquiries(): HasMany
+    {
+        return $this->hasMany(TeacherEnquiry::class);
     }
 
     /**
@@ -58,6 +78,8 @@ class TeacherProfile extends Model
             'city',
             'profile_photo_path',
             'teaching_mode',
+            'languages',
+            'available_time_blocks',
             'years_experience',
         ];
 

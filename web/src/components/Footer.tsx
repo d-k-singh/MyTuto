@@ -5,7 +5,7 @@ const COLUMNS = [
   {
     title: "Learn",
     links: [
-      { label: "Find a Tutor", href: "/login?role=student&mode=signup" },
+      { label: "Find a Tutor", href: "/find-a-tutor" },
       { label: "For Parents", href: "/login?role=parent&mode=signup" },
       { label: "How It Works", href: "#how-it-works" },
     ],

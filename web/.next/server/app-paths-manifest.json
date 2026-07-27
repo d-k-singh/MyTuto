@@ -3,7 +3,9 @@
   "/_not-found/page": "app/_not-found/page.js",
   "/apple-icon.png/route": "app/apple-icon.png/route.js",
   "/dashboard/page": "app/dashboard/page.js",
+  "/find-a-tutor/page": "app/find-a-tutor/page.js",
   "/icon.png/route": "app/icon.png/route.js",
   "/login/page": "app/login/page.js",
-  "/page": "app/page.js"
+  "/page": "app/page.js",
+  "/teachers/[id]/page": "app/teachers/[id]/page.js"
 }

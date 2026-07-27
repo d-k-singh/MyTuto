@@ -73,6 +73,16 @@ class User extends Authenticatable
         return $this->hasMany(ParentalConsentRequest::class, 'student_id');
     }
 
+    public function teacherShortlists(): HasMany
+    {
+        return $this->hasMany(TeacherShortlist::class);
+    }
+
+    public function teacherEnquiries(): HasMany
+    {
+        return $this->hasMany(TeacherEnquiry::class);
+    }
+
     public function isTeacher(): bool
     {
         return $this->role === UserRole::Teacher;

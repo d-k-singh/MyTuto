@@ -26,7 +26,7 @@ class SubjectCatalogController extends Controller
     {
         $request->validate([
             'subject_category_id' => ['sometimes', 'integer'],
-            'per_page' => ['sometimes', 'integer', 'min:1', 'max:100'],
+            'per_page' => ['sometimes', 'integer', 'min:1', 'max:200'],
         ]);
 
         $subjects = Subject::query()

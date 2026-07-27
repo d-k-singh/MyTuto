@@ -1,0 +1,15 @@
+export const COMMON_INDIAN_LANGUAGES = [
+  "Hindi",
+  "English",
+  "Bengali",
+  "Marathi",
+  "Telugu",
+  "Tamil",
+  "Gujarati",
+  "Urdu",
+  "Kannada",
+  "Odia",
+  "Malayalam",
+  "Punjabi",
+  "Assamese",
+];

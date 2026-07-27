@@ -56,8 +56,35 @@ class TeacherProfileTest extends TestCase
             'display_name' => 'Ms. Sharma',
         ]);
 
-        // 1 of 9 completion fields filled in.
-        $response->assertOk()->assertJsonPath('profile.completion_percentage', 11);
+        // 1 of 11 completion fields filled in.
+        $response->assertOk()->assertJsonPath('profile.completion_percentage', 9);
+    }
+
+    public function test_teacher_can_update_languages_and_available_time_blocks(): void
+    {
+        $user = User::factory()->teacher()->create();
+        TeacherProfile::create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/teacher/profile', [
+            'languages' => ['English', 'Hindi'],
+            'available_time_blocks' => ['08:00-12:00', '18:00-20:00'],
+        ]);
+
+        $response->assertOk()
+            ->assertJsonPath('profile.languages', ['English', 'Hindi'])
+            ->assertJsonPath('profile.available_time_blocks', ['08:00-12:00', '18:00-20:00']);
+    }
+
+    public function test_update_rejects_invalid_time_block(): void
+    {
+        $user = User::factory()->teacher()->create();
+        TeacherProfile::create(['user_id' => $user->id]);
+
+        $response = $this->actingAs($user, 'sanctum')->putJson('/api/teacher/profile', [
+            'available_time_blocks' => ['midnight-madness'],
+        ]);
+
+        $response->assertUnprocessable()->assertJsonValidationErrors('available_time_blocks.0');
     }
 
     public function test_update_rejects_teacher_under_eighteen(): void

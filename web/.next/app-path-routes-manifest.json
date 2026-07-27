@@ -3,7 +3,9 @@
   "/_not-found/page": "/_not-found",
   "/apple-icon.png/route": "/apple-icon.png",
   "/dashboard/page": "/dashboard",
+  "/find-a-tutor/page": "/find-a-tutor",
   "/icon.png/route": "/icon.png",
   "/login/page": "/login",
-  "/page": "/"
+  "/page": "/",
+  "/teachers/[id]/page": "/teachers/[id]"
 }
