@@ -77,7 +77,7 @@ export default function LoginForm({
           : await api.post<AuthResponse>("/auth/login", { email, password });
 
       storeSession(response.token, response.user);
-      const dashboardRoles = ["student", "parent", "teacher"];
+      const dashboardRoles = ["student", "parent", "teacher", "admin", "super_admin"];
       router.push(dashboardRoles.includes(response.user.role) ? "/dashboard" : "/");
       router.refresh();
     } catch (err) {
