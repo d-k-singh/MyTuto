@@ -1,9 +1,19 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, AlertCircle, CheckCircle2, Clock, XCircle } from "lucide-react";
+import {
+  Loader2,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  XCircle,
+  LayoutDashboard,
+  UserCircle,
+  ShieldCheck,
+} from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { toDateInputValue } from "@/lib/date";
+import DashboardShell, { type DashboardSection } from "./DashboardShell";
 
 type StudentProfile = {
   id: number;
@@ -31,6 +41,7 @@ type ConsentRequest = {
 const GENDER_OPTIONS = ["Female", "Male", "Non-binary", "Prefer not to say"];
 
 export default function StudentDashboard({ token }: { token: string }) {
+  const [activeSection, setActiveSection] = useState("overview");
   const [profile, setProfile] = useState<StudentProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -75,14 +86,29 @@ export default function StudentDashboard({ token }: { token: string }) {
     );
   }
 
+  const sections: DashboardSection[] = [
+    { id: "overview", label: "Overview", icon: LayoutDashboard },
+    { id: "profile", label: "My Profile", icon: UserCircle },
+    ...(profile.is_minor === true
+      ? [{ id: "consent", label: "Parental Consent", icon: ShieldCheck }]
+      : []),
+  ];
+
   return (
-    <div className="space-y-6">
-      <WelcomeCard profile={profile} />
-      <ProfileCard profile={profile} token={token} onSaved={setProfile} />
-      {profile.is_minor === true && !profile.parental_consent_given && (
+    <DashboardShell sections={sections} activeSection={activeSection} onSectionChange={setActiveSection}>
+      {activeSection === "overview" && <WelcomeCard profile={profile} />}
+      {activeSection === "profile" && (
+        <ProfileCard profile={profile} token={token} onSaved={setProfile} />
+      )}
+      {activeSection === "consent" && profile.is_minor === true && !profile.parental_consent_given && (
         <ParentalConsentCard token={token} />
       )}
-    </div>
+      {activeSection === "consent" && profile.is_minor === true && profile.parental_consent_given && (
+        <div className="rounded-3xl border border-brand-green/30 bg-brand-green/5 p-8 text-center text-sm text-brand-green-dark">
+          Parental consent has been given.
+        </div>
+      )}
+    </DashboardShell>
   );
 }
 

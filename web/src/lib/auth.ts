@@ -104,3 +104,23 @@ export function useAuth() {
 export function storeSession(token: string, user: AuthUser) {
   writeSession({ token, user });
 }
+
+export function clearSession() {
+  writeSession(null);
+}
+
+const ADMIN_HOSTNAME = process.env.NEXT_PUBLIC_ADMIN_HOSTNAME ?? "superadmin.mytuto.org";
+
+/**
+ * Admin/super_admin accounts are only usable from the dedicated admin
+ * subdomain; every other role is only usable everywhere else. This is a
+ * product/UX gate, not a security boundary — the API itself has no
+ * awareness of which frontend hostname a login came from.
+ */
+export function isAllowedOnHost(role: AuthUser["role"], hostname: string): boolean {
+  const isAdminHost = hostname === ADMIN_HOSTNAME;
+  const isAdminRole = role === "admin" || role === "super_admin";
+  return isAdminHost === isAdminRole;
+}
+
+export { ADMIN_HOSTNAME };

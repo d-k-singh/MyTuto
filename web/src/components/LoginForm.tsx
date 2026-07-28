@@ -11,7 +11,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
-import { storeSession, type AuthUser } from "@/lib/auth";
+import { storeSession, clearSession, isAllowedOnHost, type AuthUser } from "@/lib/auth";
 
 type Role = "student" | "parent" | "teacher";
 type Mode = "login" | "signup";
@@ -75,6 +75,17 @@ export default function LoginForm({
               role,
             })
           : await api.post<AuthResponse>("/auth/login", { email, password });
+
+      if (!isAllowedOnHost(response.user.role, window.location.hostname)) {
+        clearSession();
+        const isAdminRole = response.user.role === "admin" || response.user.role === "super_admin";
+        setFormError(
+          isAdminRole
+            ? "Admin accounts can only sign in at the admin dashboard's own address."
+            : "This address is for administrator accounts only.",
+        );
+        return;
+      }
 
       storeSession(response.token, response.user);
       const dashboardRoles = ["student", "parent", "teacher", "admin", "super_admin"];

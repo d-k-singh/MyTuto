@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\StatsController as AdminStatsController;
 use App\Http\Controllers\Api\Admin\SubjectCategoryController as AdminSubjectCategoryController;
 use App\Http\Controllers\Api\Admin\SubjectController as AdminSubjectController;
 use App\Http\Controllers\Api\Admin\TeacherVerificationController;
@@ -77,6 +78,8 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     Route::middleware('role:admin,super_admin')->prefix('admin')->group(function () {
+        Route::get('/stats', [AdminStatsController::class, 'index']);
+
         Route::get('/users', [AdminUserController::class, 'index']);
         Route::get('/users/{user}', [AdminUserController::class, 'show']);
         Route::patch('/users/{user}/activate', [AdminUserController::class, 'activate']);

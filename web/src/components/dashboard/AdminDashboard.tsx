@@ -10,8 +10,13 @@ import {
   ChevronUp,
   Plus,
   Pencil,
+  LayoutDashboard,
+  Users as UsersIcon,
+  BookOpen,
+  Clock,
 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
+import DashboardShell, { type DashboardSection } from "./DashboardShell";
 
 type UserRole = "student" | "parent" | "teacher" | "admin" | "super_admin";
 
@@ -68,15 +73,124 @@ function inputClass(hasError = false) {
   }`;
 }
 
+const SECTIONS: DashboardSection[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "users", label: "Users", icon: UsersIcon },
+  { id: "catalog", label: "Subject Catalog", icon: BookOpen },
+];
+
 export default function AdminDashboard({ token }: { token: string }) {
+  const [activeSection, setActiveSection] = useState("overview");
+
+  return (
+    <DashboardShell sections={SECTIONS} activeSection={activeSection} onSectionChange={setActiveSection}>
+      {activeSection === "overview" && <OverviewSection token={token} />}
+      {activeSection === "users" && <UsersCard token={token} />}
+      {activeSection === "catalog" && <SubjectCatalogCard token={token} />}
+    </DashboardShell>
+  );
+}
+
+type AdminStats = {
+  total_users: number;
+  users_by_role: Record<string, number>;
+  pending_teacher_approvals: number;
+  total_subjects: number;
+};
+
+function OverviewSection({ token }: { token: string }) {
+  const [stats, setStats] = useState<AdminStats | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    api
+      .get<AdminStats>("/admin/stats", token)
+      .then((data) => {
+        if (!cancelled) setStats(data);
+      })
+      .catch(() => {
+        if (!cancelled) setError("Couldn't load stats. Please try again shortly.");
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
+
+  if (error) {
+    return (
+      <div className="flex items-start gap-2 rounded-xl bg-red-50 px-4 py-3 text-sm text-red-700">
+        <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+        {error}
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="flex justify-center py-24">
+        <Loader2 className="h-6 w-6 animate-spin text-zinc-400" />
+      </div>
+    );
+  }
+
+  const cards = [
+    { label: "Total Users", value: stats.total_users },
+    { label: "Students", value: stats.users_by_role.student ?? 0 },
+    { label: "Parents", value: stats.users_by_role.parent ?? 0 },
+    { label: "Teachers", value: stats.users_by_role.teacher ?? 0 },
+  ];
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-xl font-bold text-zinc-900">Admin</h1>
-        <p className="mt-1 text-sm text-zinc-500">Manage users, teacher approvals, and the subject catalog.</p>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map((card) => (
+          <div key={card.label} className="rounded-3xl border border-zinc-200 bg-white p-6">
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">{card.label}</p>
+            <p className="mt-2 text-3xl font-bold text-zinc-900">{card.value}</p>
+          </div>
+        ))}
       </div>
-      <UsersCard token={token} />
-      <SubjectCatalogCard token={token} />
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        <div
+          className={`flex items-center gap-4 rounded-3xl border p-6 ${
+            stats.pending_teacher_approvals > 0
+              ? "border-brand-orange/30 bg-brand-orange/5"
+              : "border-zinc-200 bg-white"
+          }`}
+        >
+          <div
+            className={`flex h-12 w-12 items-center justify-center rounded-full ${
+              stats.pending_teacher_approvals > 0 ? "bg-brand-orange/15" : "bg-zinc-100"
+            }`}
+          >
+            <Clock
+              className={`h-5 w-5 ${
+                stats.pending_teacher_approvals > 0 ? "text-brand-orange-dark" : "text-zinc-400"
+              }`}
+            />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+              Pending Teacher Approvals
+            </p>
+            <p className="mt-1 text-2xl font-bold text-zinc-900">{stats.pending_teacher_approvals}</p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4 rounded-3xl border border-zinc-200 bg-white p-6">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100">
+            <BookOpen className="h-5 w-5 text-zinc-400" />
+          </div>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">Total Subjects</p>
+            <p className="mt-1 text-2xl font-bold text-zinc-900">{stats.total_subjects}</p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

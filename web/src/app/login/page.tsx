@@ -1,6 +1,21 @@
+import type { Metadata } from "next";
+import { headers } from "next/headers";
 import Link from "next/link";
 import Image from "next/image";
 import LoginForm from "@/components/LoginForm";
+
+const ADMIN_HOSTNAME = process.env.NEXT_PUBLIC_ADMIN_HOSTNAME ?? "superadmin.mytuto.org";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const headersList = await headers();
+  const hostname = headersList.get("host")?.split(":")[0];
+
+  if (hostname === ADMIN_HOSTNAME) {
+    return { robots: { index: false, follow: false } };
+  }
+
+  return {};
+}
 
 export default async function LoginPage({
   searchParams,

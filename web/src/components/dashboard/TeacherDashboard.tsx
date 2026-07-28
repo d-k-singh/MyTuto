@@ -11,11 +11,16 @@ import {
   Plus,
   Pencil,
   Trash2,
+  LayoutDashboard,
+  UserCircle,
+  Settings,
+  BookOpen,
 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { toDateInputValue } from "@/lib/date";
 import { COMMON_INDIAN_LANGUAGES } from "@/lib/languages";
 import { TIME_BLOCKS } from "@/lib/timeBlocks";
+import DashboardShell, { type DashboardSection } from "./DashboardShell";
 
 type TeacherProfile = {
   id: number;
@@ -69,6 +74,7 @@ function inputClass(hasError: boolean) {
 }
 
 export default function TeacherDashboard({ token }: { token: string }) {
+  const [activeSection, setActiveSection] = useState("overview");
   const [profile, setProfile] = useState<TeacherProfile | null>(null);
   const [offerings, setOfferings] = useState<TeacherSubjectOffering[] | null>(null);
   const [categories, setCategories] = useState<SubjectCategory[]>([]);
@@ -120,25 +126,42 @@ export default function TeacherDashboard({ token }: { token: string }) {
   }
 
   return (
-    <div className="space-y-6">
-      <WelcomeCard profile={profile} />
-      <VerificationCard profile={profile} />
-      <ProfileCard profile={profile} token={token} onSaved={setProfile} />
-      <TeachingPreferencesCard profile={profile} token={token} onSaved={setProfile} />
-      <SubjectsCard
-        token={token}
-        offerings={offerings}
-        categories={categories}
-        catalogSubjects={catalogSubjects}
-        onCreated={(offering) => setOfferings((prev) => [...(prev ?? []), offering])}
-        onUpdated={(offering) =>
-          setOfferings((prev) => (prev ?? []).map((o) => (o.id === offering.id ? offering : o)))
-        }
-        onDeleted={(id) => setOfferings((prev) => (prev ?? []).filter((o) => o.id !== id))}
-      />
-    </div>
+    <DashboardShell sections={SECTIONS} activeSection={activeSection} onSectionChange={setActiveSection}>
+      {activeSection === "overview" && (
+        <div className="space-y-6">
+          <WelcomeCard profile={profile} />
+          <VerificationCard profile={profile} />
+        </div>
+      )}
+      {activeSection === "profile" && (
+        <ProfileCard profile={profile} token={token} onSaved={setProfile} />
+      )}
+      {activeSection === "preferences" && (
+        <TeachingPreferencesCard profile={profile} token={token} onSaved={setProfile} />
+      )}
+      {activeSection === "subjects" && (
+        <SubjectsCard
+          token={token}
+          offerings={offerings}
+          categories={categories}
+          catalogSubjects={catalogSubjects}
+          onCreated={(offering) => setOfferings((prev) => [...(prev ?? []), offering])}
+          onUpdated={(offering) =>
+            setOfferings((prev) => (prev ?? []).map((o) => (o.id === offering.id ? offering : o)))
+          }
+          onDeleted={(id) => setOfferings((prev) => (prev ?? []).filter((o) => o.id !== id))}
+        />
+      )}
+    </DashboardShell>
   );
 }
+
+const SECTIONS: DashboardSection[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "profile", label: "My Profile", icon: UserCircle },
+  { id: "preferences", label: "Teaching Preferences", icon: Settings },
+  { id: "subjects", label: "My Subjects", icon: BookOpen },
+];
 
 function WelcomeCard({ profile }: { profile: TeacherProfile }) {
   return (

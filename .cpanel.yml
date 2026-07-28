@@ -37,6 +37,24 @@
 #     not the full dev toolchain
 #   - Touches tmp/restart.txt so Passenger picks up the new build
 #
+# --- Admin subdomain (superadmin.mytuto.org) ---
+# Same repo, same pre-built web/.next output, deployed to a SECOND,
+# independent Node.js App instance — not a separate codebase. Routing
+# between "this is the admin subdomain" vs "this is the main site" happens
+# at runtime inside the single build (web/src/proxy.ts + the client-side
+# host/role check in lib/auth.ts#isAllowedOnHost), not via anything here.
+# cPanel provisions one nodevenv per Application root, so this needs its
+# own copy/install block — it can't share the main instance's.
+#
+# Prerequisites (one-time, manual, same pattern as api.mytuto.org):
+#   1. DNS: add an A record for superadmin.mytuto.org at your DNS provider
+#      (GoDaddy etc.) pointing at this server's IP.
+#   2. cPanel subdomain: create superadmin.mytuto.org.
+#   3. "Setup Node.js App" -> a SECOND app: Application root = ADMIN_APP_ROOT
+#      below, Application URL = superadmin.mytuto.org, startup file
+#      server.js, same Node.js version as the main app.
+#   4. Edit ADMIN_APP_ROOT below to match what you chose in step 3.
+#
 # --- Backend (Laravel API) ---
 # Deployed to ~/api-backend, served by the api.mytuto.org subdomain whose
 # document root points at ~/api-backend/public (not the app root — keeps
@@ -73,6 +91,18 @@ deployment:
     - deactivate
     - /bin/mkdir -p $DEPLOYPATH/tmp
     - /bin/touch $DEPLOYPATH/tmp/restart.txt
+
+    - export ADMIN_APP_ROOT=MyTutoAdmin
+    - export ADMIN_DEPLOYPATH=$HOME/$ADMIN_APP_ROOT
+    - /bin/mkdir -p $ADMIN_DEPLOYPATH
+    - /bin/cp -R web/. $ADMIN_DEPLOYPATH
+    - /bin/rm -rf $ADMIN_DEPLOYPATH/node_modules
+    - source $HOME/nodevenv/$ADMIN_APP_ROOT/$NODE_VERSION/bin/activate
+    - cd $ADMIN_DEPLOYPATH
+    - npm ci --omit=dev
+    - deactivate
+    - /bin/mkdir -p $ADMIN_DEPLOYPATH/tmp
+    - /bin/touch $ADMIN_DEPLOYPATH/tmp/restart.txt
 
     - export API_APP_ROOT=api-backend
     - export API_PHP_BIN=/opt/cpanel/ea-php83/root/usr/bin/php

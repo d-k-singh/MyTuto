@@ -1,9 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, AlertCircle, CheckCircle2, UserPlus, Check, X } from "lucide-react";
+import {
+  Loader2,
+  AlertCircle,
+  CheckCircle2,
+  UserPlus,
+  Check,
+  X,
+  LayoutDashboard,
+  UserCircle,
+  Users,
+  Mail,
+} from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { toDateInputValue } from "@/lib/date";
+import DashboardShell, { type DashboardSection } from "./DashboardShell";
 
 type ParentProfile = {
   id: number;
@@ -57,6 +69,7 @@ function inputClass(hasError: boolean) {
 }
 
 export default function ParentDashboard({ token }: { token: string }) {
+  const [activeSection, setActiveSection] = useState("overview");
   const [profile, setProfile] = useState<ParentProfile | null>(null);
   const [children, setChildren] = useState<Child[] | null>(null);
   const [consentRequests, setConsentRequests] = useState<IncomingConsentRequest[] | null>(null);
@@ -105,29 +118,56 @@ export default function ParentDashboard({ token }: { token: string }) {
   }
 
   return (
-    <div className="space-y-6">
-      <WelcomeCard profile={profile} />
-      {consentRequests.length > 0 && (
-        <ConsentRequestsCard
+    <DashboardShell sections={SECTIONS} activeSection={activeSection} onSectionChange={setActiveSection}>
+      {activeSection === "overview" && (
+        <div className="space-y-6">
+          <WelcomeCard profile={profile} />
+          {consentRequests.length > 0 && (
+            <ConsentRequestsCard
+              token={token}
+              requests={consentRequests}
+              onResolved={(id) =>
+                setConsentRequests((prev) => (prev ?? []).filter((r) => r.id !== id))
+              }
+            />
+          )}
+        </div>
+      )}
+      {activeSection === "profile" && (
+        <ProfileCard profile={profile} token={token} onSaved={setProfile} />
+      )}
+      {activeSection === "children" && (
+        <ChildrenCard
           token={token}
-          requests={consentRequests}
-          onResolved={(id) =>
-            setConsentRequests((prev) => (prev ?? []).filter((r) => r.id !== id))
+          childProfiles={children}
+          onCreated={(child) => setChildren((prev) => [...(prev ?? []), child])}
+          onUpdated={(child) =>
+            setChildren((prev) => (prev ?? []).map((c) => (c.id === child.id ? child : c)))
           }
         />
       )}
-      <ProfileCard profile={profile} token={token} onSaved={setProfile} />
-      <ChildrenCard
-        token={token}
-        childProfiles={children}
-        onCreated={(child) => setChildren((prev) => [...(prev ?? []), child])}
-        onUpdated={(child) =>
-          setChildren((prev) => (prev ?? []).map((c) => (c.id === child.id ? child : c)))
-        }
-      />
-    </div>
+      {activeSection === "consent" &&
+        (consentRequests.length > 0 ? (
+          <ConsentRequestsCard
+            token={token}
+            requests={consentRequests}
+            onResolved={(id) => setConsentRequests((prev) => (prev ?? []).filter((r) => r.id !== id))}
+          />
+        ) : (
+          <div className="rounded-3xl border border-zinc-200 bg-white p-8 text-center text-sm text-zinc-500">
+            No pending consent requests.
+          </div>
+        ))}
+    </DashboardShell>
   );
 }
+
+const SECTIONS: DashboardSection[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard },
+  { id: "profile", label: "My Profile", icon: UserCircle },
+  { id: "children", label: "My Children", icon: Users },
+  { id: "consent", label: "Consent Requests", icon: Mail },
+];
 
 function WelcomeCard({ profile }: { profile: ParentProfile }) {
   return (
