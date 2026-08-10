@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { toDateInputValue } from "@/lib/date";
+import { inputClass } from "@/lib/ui";
 import DashboardShell, { type DashboardSection } from "./DashboardShell";
 
 type ParentProfile = {
@@ -58,14 +59,6 @@ function age(dateOfBirth: string | null): number | null {
   const dob = new Date(dateOfBirth);
   const diff = Date.now() - dob.getTime();
   return Math.floor(diff / (1000 * 60 * 60 * 24 * 365.25));
-}
-
-function inputClass(hasError: boolean) {
-  return `w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:ring-2 ${
-    hasError
-      ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-      : "border-zinc-300 focus:border-brand-blue focus:ring-brand-blue/15"
-  }`;
 }
 
 export default function ParentDashboard({ token }: { token: string }) {

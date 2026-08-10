@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Loader2,
   AlertCircle,
@@ -16,6 +16,7 @@ import {
   Clock,
 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
+import { inputClass } from "@/lib/ui";
 import DashboardShell, { type DashboardSection } from "./DashboardShell";
 
 type UserRole = "student" | "parent" | "teacher" | "admin" | "super_admin";
@@ -64,14 +65,6 @@ const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
   { value: "admin", label: "Admin" },
   { value: "super_admin", label: "Super Admin" },
 ];
-
-function inputClass(hasError = false) {
-  return `w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:ring-2 ${
-    hasError
-      ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-      : "border-zinc-300 focus:border-brand-blue focus:ring-brand-blue/15"
-  }`;
-}
 
 const SECTIONS: DashboardSection[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
@@ -203,6 +196,9 @@ function UsersCard({ token }: { token: string }) {
   const [searching, setSearching] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
+  // Shared between the initial load and manual searches so an older, slower
+  // response can never overwrite a newer one — see the note on handleSearch.
+  const latestRequestId = useRef(0);
 
   function buildQuery() {
     const params = new URLSearchParams({ per_page: "50" });
@@ -216,30 +212,35 @@ function UsersCard({ token }: { token: string }) {
     e.preventDefault();
     setSearching(true);
     setError(null);
+    // Submitting again before a prior search resolves must not let that
+    // prior (now-stale) response win the race and overwrite these results.
+    const requestId = ++latestRequestId.current;
     try {
       const response = await api.get<{ data: AdminUser[] }>(`/admin/users?${buildQuery().toString()}`, token);
+      if (requestId !== latestRequestId.current) return;
       setUsers(response.data);
     } catch {
+      if (requestId !== latestRequestId.current) return;
       setError("Couldn't load users. Please try again shortly.");
     } finally {
-      setSearching(false);
+      if (requestId === latestRequestId.current) setSearching(false);
     }
   }
 
   useEffect(() => {
-    let cancelled = false;
+    const requestId = ++latestRequestId.current;
 
     api
       .get<{ data: AdminUser[] }>("/admin/users?per_page=50", token)
       .then((response) => {
-        if (!cancelled) setUsers(response.data);
+        if (requestId === latestRequestId.current) setUsers(response.data);
       })
       .catch(() => {
-        if (!cancelled) setError("Couldn't load users. Please try again shortly.");
+        if (requestId === latestRequestId.current) setError("Couldn't load users. Please try again shortly.");
       });
 
     return () => {
-      cancelled = true;
+      latestRequestId.current = -1;
     };
   }, [token]);
 

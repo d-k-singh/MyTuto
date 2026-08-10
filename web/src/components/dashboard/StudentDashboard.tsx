@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { toDateInputValue } from "@/lib/date";
+import { inputClass } from "@/lib/ui";
 import DashboardShell, { type DashboardSection } from "./DashboardShell";
 
 type StudentProfile = {
@@ -197,13 +198,6 @@ function ProfileCard({
     }
   }
 
-  const inputClass = (field: string) =>
-    `w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none placeholder:text-zinc-400 focus:ring-2 ${
-      fieldErrors[field]
-        ? "border-red-400 focus:border-red-400 focus:ring-red-100"
-        : "border-zinc-300 focus:border-brand-blue focus:ring-brand-blue/15"
-    }`;
-
   return (
     <div className="rounded-3xl border border-zinc-200 bg-white p-6 sm:p-8">
       <h2 className="text-base font-bold text-zinc-900">Your profile</h2>
@@ -227,7 +221,7 @@ function ProfileCard({
             type="date"
             value={dateOfBirth}
             onChange={(e) => setDateOfBirth(e.target.value)}
-            className={inputClass("date_of_birth")}
+            className={inputClass(!!fieldErrors.date_of_birth)}
           />
           {fieldErrors.date_of_birth && (
             <p className="mt-1 text-xs text-red-600">{fieldErrors.date_of_birth}</p>
@@ -239,7 +233,7 @@ function ProfileCard({
           <select
             value={gender}
             onChange={(e) => setGender(e.target.value)}
-            className={inputClass("gender")}
+            className={inputClass(!!fieldErrors.gender)}
           >
             <option value="">Select...</option>
             {GENDER_OPTIONS.map((option) => (
@@ -260,7 +254,7 @@ function ProfileCard({
             placeholder="United States"
             value={country}
             onChange={(e) => setCountry(e.target.value)}
-            className={inputClass("country")}
+            className={inputClass(!!fieldErrors.country)}
           />
           {fieldErrors.country && (
             <p className="mt-1 text-xs text-red-600">{fieldErrors.country}</p>
@@ -274,7 +268,7 @@ function ProfileCard({
             placeholder="Austin"
             value={city}
             onChange={(e) => setCity(e.target.value)}
-            className={inputClass("city")}
+            className={inputClass(!!fieldErrors.city)}
           />
           {fieldErrors.city && (
             <p className="mt-1 text-xs text-red-600">{fieldErrors.city}</p>
@@ -291,7 +285,7 @@ function ProfileCard({
             onChange={(e) => setLearningGoal(e.target.value)}
             maxLength={255}
             rows={3}
-            className={inputClass("learning_goal")}
+            className={inputClass(!!fieldErrors.learning_goal)}
           />
           {fieldErrors.learning_goal && (
             <p className="mt-1 text-xs text-red-600">{fieldErrors.learning_goal}</p>
